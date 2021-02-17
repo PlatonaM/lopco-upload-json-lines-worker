@@ -24,11 +24,11 @@ import requests
 config = Config()
 
 
-def on_connect():
+def on_connect(client, userdata, flags, rc):
     print("connected to '{}' on '{}'".format(config.mqtt_server, config.mqtt_port))
 
 
-def on_disconnect():
+def on_disconnect(client, userdata, rc):
     print("disconnected from '{}'".format(config.mqtt_server, config.mqtt_port))
 
 
