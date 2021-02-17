@@ -10,16 +10,12 @@
             "mqtt_port": null,
             "mqtt_keepalive": "10",
             "usr": null,
-            "pw": null
+            "pw": null,
+            "service_id": null
         },
         "input": {
-            "type": "multiple",
+            "type": "single",
             "fields": [
-                {
-                    "name": "service_id",
-                    "media_type": "text/plain",
-                    "is_file": false
-                },
                 {
                     "name": "source_file",
                     "media_type": "text/plain",
