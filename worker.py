@@ -46,21 +46,14 @@ mqtt_client.on_connect = on_connect
 mqtt_client.disconnect = on_disconnect
 mqtt_client.loop_start()
 
-parsers = list()
-
-for i in range(0, len(config.inputs)):
-    parser = Parser(
-        ds_id=config.ds_platform_id,
-        srv_id=config.inputs[str(i)][config.service_id_field],
-        file=config.inputs[str(i)][config.source_file_field],
-        dc_path=config.data_cache_path,
-        client=mqtt_client
-    )
-    parsers.append(parser)
-    parser.start()
-
-for parser in parsers:
-    parser.join()
+parser = Parser(
+    ds_id=config.ds_platform_id,
+    srv_id=config.service_id,
+    file=config.source_file,
+    dc_path=config.data_cache_path,
+    client=mqtt_client
+)
+parser.run()
 
 mqtt_client.disconnect()
 

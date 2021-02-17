@@ -19,14 +19,12 @@ __all__ = ("Parser",)
 
 
 import paho.mqtt.client
-import threading
 import os
 import time
 
 
-class Parser(threading.Thread):
+class Parser:
     def __init__(self, ds_id: str, srv_id: str, file: str, dc_path: str, client: paho.mqtt.client.Client):
-        super().__init__(name="parser-{}".format(file), daemon=True)
         self.__ds_id = ds_id
         self.__srv_id = srv_id
         self.__file_path = os.path.join(dc_path, file)

@@ -33,19 +33,5 @@ class Config:
         self.mqtt_keepalive = os.getenv("mqtt_keepalive")
         self.usr = os.getenv("usr")
         self.pw = os.getenv("pw")
-        self.source_file_field = "source_file"
-        self.service_id_field = "service_id"
-        self.inputs = dict()
-        for key, value in os.environ.items():
-            if self.source_file_field in key:
-                num = key.split("_", 2)[1]
-                if num not in self.inputs:
-                    self.inputs[num] = {self.source_file_field: value}
-                else:
-                    self.inputs[num][self.source_file_field] = value
-            if self.service_id_field in key:
-                num = key.split("_", 2)[1]
-                if num not in self.inputs:
-                    self.inputs[num] = {self.service_id_field: value}
-                else:
-                    self.inputs[num][self.service_id_field] = value
+        self.service_id = os.getenv("service_id")
+        self.source_file = os.getenv("source_file")
