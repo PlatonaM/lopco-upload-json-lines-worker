@@ -23,6 +23,15 @@ import requests
 
 config = Config()
 
+
+def on_connect():
+    print("connected to '{}' on '{}'".format(config.mqtt_server, config.mqtt_port))
+
+
+def on_disconnect():
+    print("disconnected from '{}'".format(config.mqtt_server, config.mqtt_port))
+
+
 mqtt_client = paho.mqtt.client.Client(client_id=config.dep_instance, clean_session=False)
 mqtt_client.username_pw_set(username=config.usr, password=config.pw)
 mqtt_client.tls_set()
@@ -33,6 +42,8 @@ mqtt_client.connect(
     keepalive=int(config.mqtt_keepalive)
 )
 
+mqtt_client.on_connect = on_connect
+mqtt_client.disconnect = on_disconnect
 mqtt_client.loop_start()
 
 parsers = list()
