@@ -58,19 +58,50 @@ mqtt_client.on_connect = on_connect
 mqtt_client.on_disconnect = on_disconnect
 mqtt_client.loop_start()
 
-print("publishing messages ...")
+line_count = 0
 with open(os.path.join(data_cache_path, source_file), "r") as file:
-    pub_count = 0
+    for line in file:
+        line_count += 1
+
+p = 1
+steps = 100 / p
+prog_step = int(line_count / steps)
+
+
+def calc_time(s_t, p_c):
+    t = (time.time() - s_t) * (steps - int(p_c / prog_step))
+    if t < 60:
+        return "{}s".format(round(t, 2))
+    if t < 3600:
+        return "{}m".format(round(t / 60, 2))
+    return "{}h".format(round(t / 3600, 2))
+
+
+print("publishing messages ...")
+pub_count = 0
+prog_count = 0
+srt_time = time.time()
+with open(os.path.join(data_cache_path, source_file), "r") as file:
     for line in file:
         line = line.strip()
         while True:
             msg_info = mqtt_client.publish(topic=ds_platform_id + "/" + service_id, payload=line, qos=mqtt_qos)
             msg_info.wait_for_publish()
             if msg_info.rc == paho.mqtt.client.MQTT_ERR_SUCCESS:
-                pub_count += 1
+                prog_count += 1
                 break
             print("failed to publish message from line '{}'".format(pub_count))
             time.sleep(5)
+        if prog_count == prog_step:
+            pub_count += prog_count
+            done_p = int(pub_count / prog_step) * p
+            if done_p < 100:
+                print("{}% (estimated time remaining: {})".format(str(done_p).zfill(3), calc_time(srt_time, pub_count)))
+            prog_count = 0
+            srt_time = time.time()
+if prog_count < prog_step:
+    pub_count += prog_count
+print("100%")
 print("published '{}' messages".format(pub_count))
 
 
