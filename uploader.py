@@ -28,6 +28,7 @@ ds_platform_type_id = os.getenv("DS_PLATFORM_TYPE_ID")
 mqtt_server = os.getenv("mqtt_server")
 mqtt_port = int(os.getenv("mqtt_port"))
 mqtt_keepalive = int(os.getenv("mqtt_keepalive"))
+mqtt_qos = int(os.getenv("mqtt_qos"))
 usr = os.getenv("usr")
 pw = os.getenv("pw")
 service_id = os.getenv("service_id")
@@ -63,7 +64,7 @@ with open(os.path.join(data_cache_path, source_file), "r") as file:
     for line in file:
         line = line.strip()
         while True:
-            msg_info = mqtt_client.publish(topic=ds_platform_id + "/" + service_id, payload=line, qos=2)
+            msg_info = mqtt_client.publish(topic=ds_platform_id + "/" + service_id, payload=line, qos=mqtt_qos)
             msg_info.wait_for_publish()
             if msg_info.rc == paho.mqtt.client.MQTT_ERR_SUCCESS:
                 pub_count += 1
