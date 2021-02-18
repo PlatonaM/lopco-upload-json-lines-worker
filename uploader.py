@@ -17,6 +17,7 @@
 
 import os
 import paho.mqtt.client
+import socket
 import time
 import requests
 
@@ -29,6 +30,8 @@ mqtt_server = os.getenv("mqtt_server")
 mqtt_port = int(os.getenv("mqtt_port"))
 mqtt_keepalive = int(os.getenv("mqtt_keepalive") or 5)
 mqtt_qos = int(os.getenv("mqtt_qos") or 2)
+mqtt_con_retry = int(os.getenv("mqtt_connect_retry") or 10)
+mqtt_con_retry_delay = int(os.getenv("mqtt_connect_retry_dealy") or 30)
 usr = os.getenv("usr")
 pw = os.getenv("pw")
 service_id = os.getenv("service_id")
@@ -48,11 +51,23 @@ mqtt_client = paho.mqtt.client.Client(client_id=dep_instance)
 mqtt_client.username_pw_set(username=usr, password=pw)
 mqtt_client.tls_set()
 
-mqtt_client.connect(
-    host=mqtt_server,
-    port=mqtt_port,
-    keepalive=mqtt_keepalive
-)
+
+print("connecting ...")
+tries = 0
+while True:
+    try:
+        mqtt_client.connect(
+            host=mqtt_server,
+            port=mqtt_port,
+            keepalive=mqtt_keepalive
+        )
+        break
+    except (socket.timeout, OSError) as ex:
+        if tries >= mqtt_con_retry:
+            raise ex
+        tries += 1
+        print("connecting failed - {} - retry in {}s".format(ex, mqtt_con_retry_delay * (tries)))
+        time.sleep(mqtt_con_retry_delay * (tries + 1))
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_disconnect = on_disconnect
@@ -103,7 +118,6 @@ if prog_count < prog_step:
     pub_count += prog_count
 print("100%")
 print("published '{}' messages".format(pub_count))
-
 
 mqtt_client.disconnect()
 
