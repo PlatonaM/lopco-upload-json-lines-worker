@@ -15,46 +15,64 @@
 """
 
 
-from uploader import Config
-from uploader import Parser
+import os
 import paho.mqtt.client
+import time
 import requests
 
 
-config = Config()
+data_cache_path = "/data_cache"
+dep_instance = os.getenv("DEP_INSTANCE")
+job_callback_url = os.getenv("JOB_CALLBACK_URL")
+ds_platform_id = os.getenv("DS_PLATFORM_ID")
+ds_platform_type_id = os.getenv("DS_PLATFORM_TYPE_ID")
+mqtt_server = os.getenv("mqtt_server")
+mqtt_port = os.getenv("mqtt_port")
+mqtt_keepalive = os.getenv("mqtt_keepalive")
+usr = os.getenv("usr")
+pw = os.getenv("pw")
+service_id = os.getenv("service_id")
+source_file = os.getenv("source_file")
 
 
 def on_connect(client, userdata, flags, rc):
-    print("connected to '{}' on '{}'".format(config.mqtt_server, config.mqtt_port))
+    print("connected to '{}' on '{}'".format(mqtt_server, mqtt_port))
 
 
 def on_disconnect(client, userdata, rc):
-    print("disconnected from '{}'".format(config.mqtt_server, config.mqtt_port))
+    print("disconnected from '{}'".format(mqtt_server, mqtt_port))
 
 
-mqtt_client = paho.mqtt.client.Client(client_id=config.dep_instance, clean_session=False)
-mqtt_client.username_pw_set(username=config.usr, password=config.pw)
+mqtt_client = paho.mqtt.client.Client(client_id=dep_instance)
+mqtt_client.username_pw_set(username=usr, password=pw)
 mqtt_client.tls_set()
 
 mqtt_client.connect(
-    host=config.mqtt_server,
-    port=int(config.mqtt_port),
-    keepalive=int(config.mqtt_keepalive)
+    host=mqtt_server,
+    port=int(mqtt_port),
+    keepalive=int(mqtt_keepalive)
 )
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_disconnect = on_disconnect
 mqtt_client.loop_start()
 
-parser = Parser(
-    ds_id=config.ds_platform_id,
-    srv_id=config.service_id,
-    file=config.source_file,
-    dc_path=config.data_cache_path,
-    client=mqtt_client
-)
-parser.run()
+print("publishing messages ...")
+with open(os.path.join(data_cache_path, source_file), "r") as file:
+    pub_count = 0
+    for line in file:
+        line = line.strip()
+        while True:
+            msg_info = mqtt_client.publish(topic=ds_platform_id + "/" + service_id, payload=line, qos=2)
+            msg_info.wait_for_publish()
+            if msg_info.rc == paho.mqtt.client.MQTT_ERR_SUCCESS:
+                pub_count += 1
+                break
+            print("failed to publish message from line '{}'".format(pub_count))
+            time.sleep(5)
+print("published '{}' messages".format(pub_count))
+
 
 mqtt_client.disconnect()
 
-resp = requests.post(config.job_callback_url,json={config.dep_instance: None})
+resp = requests.post(job_callback_url,json={dep_instance: None})
