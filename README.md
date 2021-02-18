@@ -8,10 +8,9 @@
         "configs": {
             "mqtt_server": null,
             "mqtt_port": null,
-            "mqtt_keepalive": "10",
+            "service_id": null,
             "usr": null,
-            "pw": null,
-            "service_id": null
+            "pw": null
         },
         "input": {
             "type": "single",
