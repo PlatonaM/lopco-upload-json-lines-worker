@@ -21,18 +21,18 @@ import time
 import requests
 
 
-data_cache_path = "/data_cache"
 dep_instance = os.getenv("DEP_INSTANCE")
 job_callback_url = os.getenv("JOB_CALLBACK_URL")
 ds_platform_id = os.getenv("DS_PLATFORM_ID")
 ds_platform_type_id = os.getenv("DS_PLATFORM_TYPE_ID")
 mqtt_server = os.getenv("mqtt_server")
-mqtt_port = os.getenv("mqtt_port")
-mqtt_keepalive = os.getenv("mqtt_keepalive")
+mqtt_port = int(os.getenv("mqtt_port"))
+mqtt_keepalive = int(os.getenv("mqtt_keepalive"))
 usr = os.getenv("usr")
 pw = os.getenv("pw")
 service_id = os.getenv("service_id")
 source_file = os.getenv("source_file")
+data_cache_path = "/data_cache"
 
 
 def on_connect(client, userdata, flags, rc):
@@ -49,8 +49,8 @@ mqtt_client.tls_set()
 
 mqtt_client.connect(
     host=mqtt_server,
-    port=int(mqtt_port),
-    keepalive=int(mqtt_keepalive)
+    port=mqtt_port,
+    keepalive=mqtt_keepalive
 )
 
 mqtt_client.on_connect = on_connect
