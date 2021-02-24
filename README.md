@@ -8,6 +8,14 @@
         "configs": {
             "mqtt_server": null,
             "mqtt_port": null,
+            "mqtt_keepalive": "5",
+            "mqtt_qos": "2",
+            "mqtt_connect_retry": "10",
+            "mqtt_connect_retry_dealy": "30",
+            "proxy_type": null,
+            "proxy_address": null,
+            "proxy_usr": null,
+            "proxy_pw": null,
             "service_id": null,
             "usr": null,
             "pw": null
@@ -24,3 +32,5 @@
         },
         "output": null
     }
+
+Possible values for `proxy_type` config option: `HTTP`, `SOCKS4` and `SOCKS5`
