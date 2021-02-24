@@ -139,6 +139,8 @@ with open(os.path.join(data_cache_path, source_file), "r") as file:
             srt_time = time.time()
 if prog_count < prog_step:
     pub_count += prog_count
+if not pub_count:
+    pub_count = prog_count
 print("100%")
 print("published '{}' messages".format(pub_count))
 
