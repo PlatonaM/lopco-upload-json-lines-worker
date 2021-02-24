@@ -109,10 +109,12 @@ prog_step = int(line_count / steps)
 def calc_time(s_t, p_c):
     t = (time.time() - s_t) * (steps - int(p_c / prog_step))
     if t < 60:
-        return "{}s".format(round(t, 2))
-    if t < 3600:
-        return "{}m".format(round(t / 60, 2))
-    return "{}h".format(round(t / 3600, 2))
+        text = "%Ss"
+    elif t < 3600:
+        text = "%Mm %Ss"
+    else:
+        text = "%Hh %Mm %Ss"
+    return time.strftime(text, time.gmtime(t))
 
 
 print("publishing messages ...")
