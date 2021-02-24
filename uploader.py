@@ -20,6 +20,7 @@ import paho.mqtt.client
 import socket
 import time
 import requests
+import socks
 
 
 dep_instance = os.getenv("DEP_INSTANCE")
@@ -36,7 +37,18 @@ usr = os.getenv("usr")
 pw = os.getenv("pw")
 service_id = os.getenv("service_id")
 source_file = os.getenv("source_file")
+proxy_type = os.getenv("proxy_type")
+proxy_addr = os.getenv("proxy_addr")
+proxy_usr = os.getenv("proxy_usr")
+proxy_pw = os.getenv("proxy_pw")
 data_cache_path = "/data_cache"
+
+
+proxy_type_map = {
+    "HTTP": socks.HTTP,
+    "SOCKS4": socks.SOCKS4,
+    "SOCKS5": socks.SOCKS5
+}
 
 
 def on_connect(client, userdata, flags, rc):
@@ -50,6 +62,17 @@ def on_disconnect(client, userdata, rc):
 mqtt_client = paho.mqtt.client.Client(client_id=dep_instance)
 mqtt_client.username_pw_set(username=usr, password=pw)
 mqtt_client.tls_set()
+
+if proxy_addr and proxy_type:
+    proxy_args = {
+        "proxy_type": proxy_type_map[proxy_type],
+        "proxy_addr": proxy_addr
+    }
+    if proxy_usr:
+        proxy_args["proxy_username"] = proxy_usr
+    if proxy_pw:
+        proxy_args["proxy_password"] = proxy_pw
+    mqtt_client.proxy_set(**proxy_args)
 
 
 print("connecting ...")
