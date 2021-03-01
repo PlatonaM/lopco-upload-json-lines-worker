@@ -17,6 +17,10 @@
             "proxy_usr": null,
             "proxy_pw": null,
             "service_id": null,
+            "batch_pos_field": null,
+            "batch_pos_start": null,
+            "batch_pos_intermediate": null,
+            "batch_pos_end": null,
             "usr": null,
             "pw": null
         },
