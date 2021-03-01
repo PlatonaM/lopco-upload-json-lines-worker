@@ -41,6 +41,10 @@ proxy_type = os.getenv("proxy_type")
 proxy_addr = os.getenv("proxy_address")
 proxy_usr = os.getenv("proxy_usr")
 proxy_pw = os.getenv("proxy_pw")
+batch_pos_field = os.getenv("batch_pos_field")
+batch_pos_start = os.getenv("batch_pos_start", "STRT")
+batch_pos_intermediate = os.getenv("batch_pos_intermediate", "null")
+batch_pos_end = os.getenv("batch_pos_end", "END")
 data_cache_path = "/data_cache"
 
 
