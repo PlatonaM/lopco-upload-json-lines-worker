@@ -136,20 +136,16 @@ with open(os.path.join(data_cache_path, source_file), "r") as file:
             msg_info.wait_for_publish()
             if msg_info.rc == paho.mqtt.client.MQTT_ERR_SUCCESS:
                 prog_count += 1
+                pub_count += 1
                 break
             print("failed to publish message from line '{}'".format(pub_count))
             time.sleep(5)
         if prog_count == prog_step:
-            pub_count += prog_count
             done_p = int(pub_count / prog_step) * p
             if done_p < 100:
                 print("{}% (estimated time remaining: {})".format(str(done_p).zfill(3), calc_time(srt_time, pub_count)))
             prog_count = 0
             srt_time = time.time()
-if prog_count < prog_step:
-    pub_count += prog_count
-if not pub_count:
-    pub_count = prog_count
 print("100%")
 print("published '{}' messages".format(pub_count))
 
