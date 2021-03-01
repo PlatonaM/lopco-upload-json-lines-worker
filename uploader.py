@@ -105,7 +105,10 @@ with open(os.path.join(data_cache_path, source_file), "r") as file:
     for line in file:
         line_count += 1
 
-p = 1
+if line_count < 100:
+    p = 10
+else:
+    p = 1
 steps = 100 / p
 prog_step = int(line_count / steps)
 
