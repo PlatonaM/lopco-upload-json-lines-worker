@@ -124,13 +124,36 @@ def calc_time(s_t, p_c):
     return time.strftime(text, time.gmtime(t))
 
 
+def std_parser(line: str, *args):
+    return line.strip()
+
+
+def batch_pos_parser(line: str, current_line: int):
+    if current_line == 0:
+        return line.strip()[:-1] + ',"{}":"{}"'.format(batch_pos_field, batch_pos_start) + '}'
+    elif current_line == line_count - 1:
+        return line.strip()[:-1] + ',"{}":"{}"'.format(batch_pos_field, batch_pos_end) + '}'
+    else:
+        return line.strip()[:-1] + ',"{}":{}'.format(batch_pos_field, batch_pos_intermediate) + '}'
+
+
+if batch_pos_field:
+    if not batch_pos_intermediate:
+        batch_pos_intermediate = '""'
+    elif batch_pos_intermediate and batch_pos_intermediate != "null":
+        batch_pos_intermediate = '"{}"'.format(batch_pos_intermediate)
+    parser = batch_pos_parser
+else:
+    parser = std_parser
+
+
 print("publishing messages ...")
 pub_count = 0
 prog_count = 0
 srt_time = time.time()
 with open(os.path.join(data_cache_path, source_file), "r") as file:
     for line in file:
-        line = line.strip()
+        line = parser(line, pub_count)
         while True:
             msg_info = mqtt_client.publish(topic=ds_platform_id + "/" + service_id, payload=line, qos=mqtt_qos)
             msg_info.wait_for_publish()
@@ -151,4 +174,4 @@ print("published '{}' messages".format(pub_count))
 
 mqtt_client.disconnect()
 
-resp = requests.post(job_callback_url,json={dep_instance: None})
+resp = requests.post(job_callback_url, json={dep_instance: None})
