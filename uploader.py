@@ -33,6 +33,7 @@ mqtt_keepalive = int(os.getenv("mqtt_keepalive", "5"))
 mqtt_qos = int(os.getenv("mqtt_qos", "2"))
 mqtt_con_retry = int(os.getenv("mqtt_connect_retry", "10"))
 mqtt_con_retry_delay = int(os.getenv("mqtt_connect_retry_dealy", "30"))
+mqtt_tls = int(os.getenv("mqtt_tls", "1"))
 usr = os.getenv("usr")
 pw = os.getenv("pw")
 service_id = os.getenv("service_id")
@@ -65,7 +66,8 @@ def on_disconnect(client, userdata, rc):
 
 mqtt_client = paho.mqtt.client.Client(client_id=dep_instance)
 mqtt_client.username_pw_set(username=usr, password=pw)
-mqtt_client.tls_set()
+if mqtt_tls:
+    mqtt_client.tls_set()
 
 if proxy_addr and proxy_type:
     proxy_args = {
