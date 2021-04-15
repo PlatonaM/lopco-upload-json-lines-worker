@@ -65,7 +65,10 @@ def on_disconnect(client, userdata, rc):
 
 
 mqtt_client = paho.mqtt.client.Client(client_id=dep_instance)
-mqtt_client.username_pw_set(username=usr, password=pw)
+
+if any((usr, pw)):
+    mqtt_client.username_pw_set(username=usr, password=pw)
+
 if mqtt_tls:
     mqtt_client.tls_set()
 
