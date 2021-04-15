@@ -71,6 +71,9 @@ if any((usr, pw)):
 
 if mqtt_tls:
     mqtt_client.tls_set()
+    print("tls encryption enabled")
+else:
+    print("tls encryption disabled")
 
 if proxy_addr and proxy_type:
     proxy_args = {
