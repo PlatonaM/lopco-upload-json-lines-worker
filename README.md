@@ -11,7 +11,7 @@
             "mqtt_keepalive": "5",
             "mqtt_qos": "2",
             "mqtt_connect_retry": "10",
-            "mqtt_connect_retry_dealy": "30",
+            "mqtt_connect_retry_delay": "30",
             "proxy_type": null,
             "proxy_address": null,
             "proxy_usr": null,
