@@ -12,6 +12,7 @@
             "mqtt_qos": "2",
             "mqtt_connect_retry": "10",
             "mqtt_connect_retry_delay": "30",
+            "mqtt_tls": "1",
             "proxy_type": null,
             "proxy_address": null,
             "proxy_usr": null,
