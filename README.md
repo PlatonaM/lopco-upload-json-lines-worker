@@ -1,4 +1,8 @@
-#### Description
+## lopco-upload-json-lines-worker
+
+Upload data stored as JSON objects per line via the PlatonM MQTT connector.
+
+### Description
 
     {
         "name": "Upload JSON Lines",
