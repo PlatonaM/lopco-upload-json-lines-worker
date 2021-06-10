@@ -1,3 +1,3 @@
-requests
-paho-mqtt
-PySocks
+requests<3.0.0
+paho-mqtt<2.0.0
+PySocks<2.0.0
